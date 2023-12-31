@@ -1,6 +1,6 @@
 import { ref } from "vue";
 
-import { timelimit } from "./config";
+import { timelimit, timedelta } from "./config";
 
 let timerId = -1;
 let callback = () => {};
@@ -11,12 +11,12 @@ export const timerStart = () => {
   timeRemaining.value = timelimit;
 
   timerId = setInterval(() => {
-    timeRemaining.value--;
+    timeRemaining.value -= timedelta;
     if (timeRemaining.value <= 0) {
       callback();
       timerStop();
     }
-  }, 1000);
+  }, timedelta);
 };
 
 export const timerStop = () => {

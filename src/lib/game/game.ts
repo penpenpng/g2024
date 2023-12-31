@@ -1,8 +1,10 @@
 import { reactive, computed, toRaw } from "vue";
 import TitleScene from "../../scenes/TitleScene.vue";
+import ResultScene from "../../scenes/ResultScene.vue";
 import { Scene, Audio } from "../engine";
 import { DragonPartsCard, draw, loadImageAssets } from "./cards";
-import { timerStart, timerStop } from "./timer";
+import { onTimelimit, timeRemaining, timerStart, timerStop } from "./timer";
+import { reloadPenalty } from "./config";
 
 declare global {
   interface AudioAssets {
@@ -51,11 +53,12 @@ export const setupGame = () => {
 
   timerStart();
   Audio.play("bgm");
-};
 
-export const cleanupGame = () => {
-  timerStop();
-  Audio.stop("bgm");
+  onTimelimit(() => {
+    timerStop();
+    Audio.stop("bgm");
+    Scene.go(ResultScene);
+  });
 };
 
 interface GameState {
@@ -205,6 +208,7 @@ export const useSpecial = (): void => {
     state.slotted.push("tornado");
   } else if (special.value === "normal") {
     state.slotted = [];
+    timeRemaining.value -= reloadPenalty;
     Audio.play("wind");
     resetHands();
   }
