@@ -97,6 +97,18 @@ const canMakeDragon = (
 
   return false;
 };
+const getName = (parts: DragonParts | undefined) => {
+  if (!parts) {
+    return "";
+  }
+  if (parts === "dragon") {
+    return "たつ";
+  }
+  if (parts === "tornado") {
+    return "たつまき";
+  }
+  return parts.name;
+};
 const remove = (arr: DragonParts[], needle: DragonParts) => {
   const index = arr.findIndex((e) => toRaw(e) === toRaw(needle));
   if (index >= 0) {
@@ -164,7 +176,7 @@ export const setHand = (card: DragonPartsCard): void => {
   Audio.play("toggle");
   state.slotted.push(card);
 };
-export const makeDragon = (): void => {
+export const makeDragon = (): string => {
   state.score += 1;
 
   if (state.slotted.includes("dragon")) {
@@ -180,7 +192,9 @@ export const makeDragon = (): void => {
     }
   }
 
+  const dragon = `${getName(state.slotted[0])}${getName(state.slotted[1])}`;
   state.slotted = [];
+  return dragon;
 };
 export const unset = (parts: DragonParts): void => {
   Audio.play("toggle");

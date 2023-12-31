@@ -14,5 +14,6 @@ import { Scene } from "../lib/engine";
   width: 100%;
   height: 660px;
   background-color: white;
+  overflow: hidden;
 }
 </style>
