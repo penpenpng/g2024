@@ -30,6 +30,10 @@ const volume = Audio.volume;
       <div class="grid-right">
         <a target="_blank" href="https://www.irasutoya.com/">いらすとや</a>
       </div>
+      <div class="grid-left">音楽</div>
+      <div class="grid-right">
+        <a target="_blank" href="https://maou.audio/">魔王魂</a>
+      </div>
     </div>
 
     <button @click="Scene.go(GameScene)">はじめる</button>
