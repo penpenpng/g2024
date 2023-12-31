@@ -8,14 +8,18 @@ const entries: ObjectEntry[] = [
     name: "つらら",
     img: import("../../assets/tsurara.png"),
   },
+  {
+    name: "まんた",
+    img: import("../../assets/manta.png"),
+  },
 ];
 
-export interface DoragonParts {
+export interface DragonPartsCard {
   name: string;
   img: string;
 }
 
-export const parts: DoragonParts[] = [];
+export const parts: DragonPartsCard[] = [];
 
 export const loadImageAssets = async () => {
   const tasks = entries.map(async ({ name, img }) => {
@@ -28,3 +32,9 @@ export const loadImageAssets = async () => {
 
   await Promise.all(tasks);
 };
+
+let id = 0;
+
+export const draw = (): DragonPartsCard => ({
+  ...parts[Math.floor(Math.random() * parts.length)],
+});

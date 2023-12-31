@@ -1,2 +1,3 @@
 export { timeRemaining } from "./timer";
-export { setupGame } from "./game";
+export type { DragonPartsCard } from "./cards";
+export * from "./game";

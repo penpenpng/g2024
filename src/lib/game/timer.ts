@@ -7,19 +7,19 @@ let callback = () => {};
 
 export const timeRemaining = ref(0);
 
-export const start = () => {
+export const timerStart = () => {
   timeRemaining.value = timelimit;
 
   timerId = setInterval(() => {
     timeRemaining.value--;
     if (timeRemaining.value <= 0) {
       callback();
-      stop();
+      timerStop();
     }
   }, 1000);
 };
 
-export const stop = () => {
+export const timerStop = () => {
   clearInterval(timerId);
 };
 
