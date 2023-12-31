@@ -12,39 +12,45 @@ type AudioAssetName = IsNever<keyof AudioAssets> extends true
   : keyof AudioAssets;
 
 export namespace Audio {
-  type AudioAsset = Promise<{
+  interface AudioAsset {
     audio: HTMLAudioElement | null;
-    config: AudioConfig;
-  }>;
+    config: AudioAssetConfig;
+  }
   const assets: Record<AudioAssetName, AudioAsset> = {};
 
-  export interface AudioConfig {
-    url: string;
+  export interface AudioAssetConfig {
+    src: Promise<typeof import("*.mp3")>;
     gain: number;
     loop?: boolean;
     skip?: number;
   }
 
-  export const preload = (
-    audios: Record<AudioAssetName, AudioConfig>
-  ): void => {
-    for (const [name, config] of Object.entries(audios)) {
-      assets[name] = new Promise((resolve) => {
-        const audio = new AudioElement(config.url);
+  const loadAudioAsset = (config: AudioAssetConfig): Promise<AudioAsset> => {
+    return new Promise(async (resolve) => {
+      const audio = new AudioElement((await config.src).default);
 
-        audio.onloadedmetadata = () => {
-          resolve({ audio, config });
-        };
-        audio.onerror = () => {
-          console.error(`Failed to load audio asset: ${config.url}.`);
-          resolve({ audio: null, config });
-        };
-      });
-    }
+      audio.onloadedmetadata = () => {
+        resolve({ audio, config });
+      };
+      audio.onerror = () => {
+        console.error(`Failed to load audio asset: ${config.src}.`);
+        resolve({ audio: null, config });
+      };
+    });
   };
 
-  export const play = async (name: AudioAssetName): Promise<void> => {
-    const { audio, config } = await assets[name];
+  export const load = async (
+    audios: Record<AudioAssetName, AudioAssetConfig>
+  ): Promise<void> => {
+    const tasks = Object.entries(audios).map(async ([name, config]) => {
+      assets[name] = await loadAudioAsset(config);
+    });
+
+    await Promise.all(tasks);
+  };
+
+  export const play = (name: AudioAssetName): void => {
+    const { audio, config } = assets[name];
     if (!audio) {
       return;
     }
@@ -53,11 +59,11 @@ export namespace Audio {
     audio.currentTime = config.skip || 0;
     audio.loop = !!config.loop;
 
-    await audio.play();
+    audio.play();
   };
 
-  export const stop = async (name: AudioAssetName): Promise<void> => {
-    const { audio } = await assets[name];
+  export const stop = (name: AudioAssetName): void => {
+    const { audio } = assets[name];
     if (!audio) {
       return;
     }
@@ -67,8 +73,8 @@ export namespace Audio {
 
   export const volume = ref(1);
 
-  watchEffect(async () => {
-    for await (const { audio, config } of Object.values(assets)) {
+  watchEffect(() => {
+    for (const { audio, config } of Object.values(assets)) {
       if (!audio) {
         continue;
       }

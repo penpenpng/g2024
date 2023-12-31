@@ -18,14 +18,13 @@ export interface DoragonParts {
 export const parts: DoragonParts[] = [];
 
 export const loadImageAssets = async () => {
-  const tasks = entries.map(({ name, img }) =>
-    img.then((module) => {
-      parts.push({
-        name,
-        img: module.default,
-      });
-    })
-  );
+  const tasks = entries.map(async ({ name, img }) => {
+    const module = await img;
+    parts.push({
+      name,
+      img: module.default,
+    });
+  });
 
   await Promise.all(tasks);
 };
