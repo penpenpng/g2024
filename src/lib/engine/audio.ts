@@ -16,7 +16,7 @@ export namespace Audio {
     audio: HTMLAudioElement | null;
     config: AudioAssetConfig;
   }
-  const assets: Record<AudioAssetName, AudioAsset> = {};
+  const assets: { [K in AudioAssetName]?: AudioAsset } = {};
 
   export interface AudioAssetConfig {
     src: Promise<typeof import("*.mp3")>;
@@ -43,17 +43,18 @@ export namespace Audio {
     audios: Record<AudioAssetName, AudioAssetConfig>
   ): Promise<void> => {
     const tasks = Object.entries(audios).map(async ([name, config]) => {
-      assets[name] = await loadAudioAsset(config);
+      assets[name as AudioAssetName] = await loadAudioAsset(config);
     });
 
     await Promise.all(tasks);
   };
 
   export const play = (name: AudioAssetName): void => {
-    const { audio, config } = assets[name];
-    if (!audio) {
+    const asset = assets[name];
+    if (!asset || !asset.audio) {
       return;
     }
+    const { audio, config } = asset;
 
     audio.volume = config.gain * volume.value;
     audio.currentTime = config.skip || 0;
@@ -63,10 +64,11 @@ export namespace Audio {
   };
 
   export const stop = (name: AudioAssetName): void => {
-    const { audio } = assets[name];
-    if (!audio) {
+    const asset = assets[name];
+    if (!asset || !asset.audio) {
       return;
     }
+    const { audio } = asset;
 
     audio.pause();
   };
@@ -74,12 +76,15 @@ export namespace Audio {
   export const volume = ref(1);
 
   watchEffect(() => {
+    // Need to touch it anyway
+    const v = volume.value;
+
     for (const { audio, config } of Object.values(assets)) {
       if (!audio) {
         continue;
       }
 
-      audio.volume = config.gain * volume.value;
+      audio.volume = config.gain * v;
     }
   });
 }

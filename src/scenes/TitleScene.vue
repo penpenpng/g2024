@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import GameScene from "./GameScene.vue";
-import { Scene } from "../lib/engine";
+import { Scene, Audio } from "../lib/engine";
+
+const volume = Audio.volume;
 </script>
 
 <template>
@@ -17,6 +19,11 @@ import { Scene } from "../lib/engine";
 
     <h2>あそびかた</h2>
     <div>省略。</div>
+
+    <h2>音量</h2>
+    <div>
+      <input v-model="volume" type="range" min="0" max="1" step="0.05" />
+    </div>
 
     <div class="grid">
       <div class="grid-left">画像</div>

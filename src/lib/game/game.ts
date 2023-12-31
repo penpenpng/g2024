@@ -1,18 +1,46 @@
 import { reactive, computed, toRaw } from "vue";
-import GameScene from "../../scenes/GameScene.vue";
+import TitleScene from "../../scenes/TitleScene.vue";
 import { Scene, Audio } from "../engine";
 import { DragonPartsCard, draw, loadImageAssets } from "./cards";
 import { timerStart, timerStop } from "./timer";
 
 declare global {
-  interface AudioAssets {}
+  interface AudioAssets {
+    bgm: void;
+    make: void;
+    toggle: void;
+    wind: void;
+    tornado: void;
+  }
 }
 
 export const setupGameApp = async () => {
-  Scene.go(GameScene);
+  Scene.go(TitleScene);
 
   await loadImageAssets();
-  await Audio.load({});
+  await Audio.load({
+    bgm: {
+      gain: 0.1,
+      src: import("../../assets/maou_bgm_fantasy04_loop.mp3"),
+      loop: true,
+    },
+    make: {
+      gain: 0.1,
+      src: import("../../assets/maou_se_system41.mp3"),
+    },
+    toggle: {
+      gain: 0.1,
+      src: import("../../assets/maou_se_system21.mp3"),
+    },
+    wind: {
+      gain: 0.1,
+      src: import("../../assets/maou_se_magic_wind02.mp3"),
+    },
+    tornado: {
+      gain: 0.4,
+      src: import("../../assets/maou_se_magic_wind03.mp3"),
+    },
+  });
 };
 
 export const setupGame = () => {
@@ -22,10 +50,12 @@ export const setupGame = () => {
   resetHands();
 
   timerStart();
+  Audio.play("bgm");
 };
 
 export const cleanupGame = () => {
   timerStop();
+  Audio.stop("bgm");
 };
 
 interface GameState {
@@ -123,6 +153,7 @@ export const setDragon = (): void => {
     return;
   }
 
+  Audio.play("toggle");
   state.slotted.push("dragon");
 };
 export const setHand = (card: DragonPartsCard): void => {
@@ -130,6 +161,7 @@ export const setHand = (card: DragonPartsCard): void => {
     return;
   }
 
+  Audio.play("toggle");
   state.slotted.push(card);
 };
 export const makeDragon = (): void => {
@@ -140,8 +172,9 @@ export const makeDragon = (): void => {
   }
 
   if (state.slotted.includes("tornado")) {
-    resetHands();
+    Audio.play("tornado");
   } else {
+    Audio.play("make");
     for (const slotted of state.slotted) {
       replace(state.hands, slotted, draw());
     }
@@ -150,6 +183,7 @@ export const makeDragon = (): void => {
   state.slotted = [];
 };
 export const unset = (parts: DragonParts): void => {
+  Audio.play("toggle");
   remove(state.slotted, parts);
 };
 export const useSpecial = (): void => {
@@ -157,6 +191,7 @@ export const useSpecial = (): void => {
     state.slotted.push("tornado");
   } else if (special.value === "normal") {
     state.slotted = [];
+    Audio.play("wind");
     resetHands();
   }
 };

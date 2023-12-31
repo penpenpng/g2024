@@ -6,9 +6,14 @@ import PartsSlot from "../components/game/PartsSlot.vue";
 import MakeDragonButton from "../components/game/MakeDragonButton.vue";
 import SpecialButton from "../components/game/SpecialButton.vue";
 
-import { setupGame } from "../lib/game";
+import { cleanupGame, setupGame } from "../lib/game";
+import { onUnmounted } from "vue";
 
 setupGame();
+
+onUnmounted(() => {
+  cleanupGame();
+});
 </script>
 
 <template>
