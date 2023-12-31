@@ -2,9 +2,8 @@ import { createApp } from "vue";
 import "./style.css";
 import App from "./App.vue";
 
-import GameScene from "./scenes/GameScene.vue";
-import { Scene } from "./lib/engine";
+import { setupGameApp } from "./lib/game/game";
 
-Scene.go(GameScene);
-
-createApp(App).mount("#app");
+setupGameApp().then(() => {
+  createApp(App).mount("#app");
+});
