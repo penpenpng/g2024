@@ -6,14 +6,9 @@ import PartsSlot from "../components/game/PartsSlot.vue";
 import MakeDragonButton from "../components/game/MakeDragonButton.vue";
 import SpecialButton from "../components/game/SpecialButton.vue";
 
-import { cleanupGame, setupGame } from "../lib/game";
-import { onUnmounted } from "vue";
+import { setupGame } from "../lib/game";
 
 setupGame();
-
-onUnmounted(() => {
-  cleanupGame();
-});
 </script>
 
 <template>
@@ -32,5 +27,6 @@ onUnmounted(() => {
   padding: 5px;
   display: grid;
   grid-template-columns: 70% 30%;
+  align-items: center;
 }
 </style>
