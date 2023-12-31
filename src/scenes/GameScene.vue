@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TitleScene from "./TitleScene.vue";
+import ResultScene from "./ResultScene.vue";
 import { Scene } from "../lib/engine";
 </script>
 
 <template>
-  <div>game</div>
-  <button @click="Scene.go(TitleScene)">go to title</button>
+  <div>ゲーム</div>
+  <button @click="Scene.go(ResultScene)">リザルトへ</button>
 </template>

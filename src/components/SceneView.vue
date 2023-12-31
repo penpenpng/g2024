@@ -3,5 +3,5 @@ import { Scene } from "../lib/engine";
 </script>
 
 <template>
-  <component :is="Scene.Component" />
+  <component :is="Scene.Component.value" />
 </template>

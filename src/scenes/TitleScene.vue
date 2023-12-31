@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import GameScene from "./GameScene.vue";
+import HowToPlayScene from "./HowToPlayScene.vue";
 import { Scene } from "../lib/engine";
 </script>
 
 <template>
-  <div>title</div>
-  <button @click="Scene.go(GameScene)">go to game</button>
+  <div>タイトル</div>
+  <button @click="Scene.go(GameScene)">はじめる</button>
+  <button @click="Scene.go(HowToPlayScene)">あそびかた</button>
 </template>
