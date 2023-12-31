@@ -4,7 +4,14 @@ import ResultScene from "../../scenes/ResultScene.vue";
 import { Scene, Audio } from "../engine";
 import { DragonPartsCard, draw, loadImageAssets } from "./cards";
 import { onTimelimit, timeRemaining, timerStart, timerStop } from "./timer";
-import { reloadPenalty } from "./config";
+import {
+  reloadPenalty,
+  scoreFakeDragon,
+  scoreTornado,
+  scoreTrueDragon,
+  timelimit,
+  timerecover,
+} from "./config";
 
 declare global {
   interface AudioAssets {
@@ -49,6 +56,7 @@ export const setupGame = () => {
   state.score = 0;
   state.slotted = [];
   state.dragonConsumed = false;
+  state.recoverd = 0;
   resetHands();
 
   timerStart();
@@ -66,6 +74,7 @@ interface GameState {
   slotted: DragonParts[];
   hands: DragonPartsCard[];
   dragonConsumed: boolean;
+  recoverd: number;
 }
 
 export type DragonParts = DragonPartsCard | "dragon" | "tornado";
@@ -75,6 +84,7 @@ const state = reactive<GameState>({
   slotted: [],
   hands: [],
   dragonConsumed: false,
+  recoverd: 0,
 });
 
 const canMakeDragon = (
@@ -180,16 +190,24 @@ export const setHand = (card: DragonPartsCard): void => {
   state.slotted.push(card);
 };
 export const makeDragon = (): string => {
-  state.score += 1;
+  timeRemaining.value = Math.min(
+    timeRemaining.value + (timerecover * Math.max(30 - state.recoverd, 1)) / 30,
+    timelimit
+  );
+  state.recoverd++;
 
   if (state.slotted.includes("dragon")) {
+    state.score += scoreTrueDragon;
     state.dragonConsumed = true;
   }
 
   if (state.slotted.includes("tornado")) {
     Audio.play("tornado");
+    state.score += scoreTornado;
+    resetHands();
   } else {
     Audio.play("make");
+    state.score += scoreFakeDragon;
     for (const slotted of state.slotted) {
       replace(state.hands, slotted, draw());
     }

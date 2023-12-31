@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import TitleScene from "./TitleScene.vue";
 import GameScene from "./GameScene.vue";
+import { score } from "../lib/game";
 import { Scene } from "../lib/engine";
 import { tweet } from "../lib/twitter";
 
-const getResult = () => "てすとだよ～";
+const getResult = () =>
+  `あけましておめでとう！私はたつづくりで ${score.value} 点獲得したよ！ ${window.location.href}`;
 
 const clipboardAvailable = !!navigator.clipboard;
 const copyResult = () => {
@@ -16,14 +18,10 @@ const tweetResult = () => tweet(getResult());
 <template>
   <div class="title-scene">
     <h1>🐉謹賀新年🐉</h1>
-    <h2>りざると</h2>
+    <p>ことしもよろしくおねがいします</p>
 
-    <div class="grid">
-      <div class="grid-left">なんか</div>
-      <div class="grid-right">100点</div>
-      <div class="grid-left">ごうけい</div>
-      <div class="grid-right">100点</div>
-    </div>
+    <h2>すこあ</h2>
+    <p>{{ score }}</p>
 
     <div class="actions">
       <button @click="Scene.go(GameScene)">もういちど</button>
@@ -86,6 +84,7 @@ p {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-block: 50px;
 }
 
 .actions > * {

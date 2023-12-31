@@ -64,7 +64,7 @@ const onclick = () => {
 }
 
 .dragon-name-enter-active {
-  animation: show 0.5s;
+  animation: show 1s;
   animation-fill-mode: forwards;
 }
 .dragon-name-leave-active {
