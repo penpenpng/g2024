@@ -18,8 +18,8 @@ export const setupGameApp = async () => {
 export const setupGame = () => {
   state.score = 0;
   state.slotted = [];
-  state.hands = [draw(), draw(), draw(), draw()];
   state.dragonConsumed = false;
+  resetHands();
 
   timerStart();
 };
@@ -79,6 +79,9 @@ const replace = (arr: DragonParts[], needle: DragonParts, x: DragonParts) => {
     arr.splice(index, 1, x);
   }
 };
+const resetHands = () => {
+  state.hands = [draw(), draw(), draw(), draw(), draw(), draw()];
+};
 
 export const hands = computed(() => state.hands);
 export const isSlotted = (parts: DragonParts) =>
@@ -137,7 +140,7 @@ export const makeDragon = (): void => {
   }
 
   if (state.slotted.includes("tornado")) {
-    state.hands = [draw(), draw(), draw(), draw()];
+    resetHands();
   } else {
     for (const slotted of state.slotted) {
       replace(state.hands, slotted, draw());
@@ -154,6 +157,6 @@ export const useSpecial = (): void => {
     state.slotted.push("tornado");
   } else if (special.value === "normal") {
     state.slotted = [];
-    state.hands = [draw(), draw(), draw(), draw()];
+    resetHands();
   }
 };

@@ -3,15 +3,30 @@ import { makeDragon, makeDragonAvailable } from "../../lib/game";
 </script>
 
 <template>
-  <div class="button" @click="makeDragonAvailable && makeDragon()">
-    <span v-if="makeDragonAvailable">👁</span>
+  <div
+    class="button"
+    :class="{ disabled: !makeDragonAvailable }"
+    @click="makeDragonAvailable && makeDragon()"
+  >
+    <img v-if="makeDragonAvailable" src="../../assets/eye.png" />
   </div>
 </template>
 
 <style scoped>
 .button {
-  width: 200px;
+  margin: 10px;
   height: 50px;
-  border: solid 1px;
+  text-align: center;
+  outline: solid 1px lightgray;
+}
+
+.button:not(.disabled) {
+  cursor: pointer;
+  outline: solid 2px red;
+}
+
+.button img {
+  height: 100%;
+  object-fit: contain;
 }
 </style>

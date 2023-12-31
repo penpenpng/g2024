@@ -25,12 +25,13 @@ const onclick = () => {
 .card {
   width: 150px;
   height: 100px;
-  border: solid 1px black;
 }
 
 .card img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  border: solid 1px seagreen;
+  cursor: pointer;
 }
 </style>
