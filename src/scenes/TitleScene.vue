@@ -72,7 +72,7 @@ p {
   display: grid;
   grid-template-columns: 60px max-content;
   grid-auto-rows: min-content;
-  padding-block: 40px;
+  padding-block: 20px;
 }
 
 .grid-left {
